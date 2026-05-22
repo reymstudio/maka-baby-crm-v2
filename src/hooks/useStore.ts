@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   collection,
   onSnapshot,
@@ -8,6 +8,8 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  orderBy,
   FirestoreError
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -52,6 +54,7 @@ interface UseStoreReturn {
   addSale: (sale: Omit<Sale, 'id' | 'saleNumber' | 'date'>) => Promise<void>;
   updateSale: (id: string, sale: Partial<Sale>) => Promise<void>;
   deleteSale: (id: string) => Promise<void>;
+  getSalesByYear: (year: number) => Sale[];
 }
 
 export const useStore = (): UseStoreReturn => {
@@ -60,9 +63,20 @@ export const useStore = (): UseStoreReturn => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Memoizar ventas por año para evitar recálculos en addSale
+  const salesByYear = useMemo(() => {
+    const currentYear = new Date().getFullYear().toString();
+    return sales.filter(s => s.saleNumber?.startsWith(currentYear));
+  }, [sales]);
+
   useEffect(() => {
+    // Optimización: Usar queries con orderBy para obtener datos ordenados desde Firestore
+    const clientsQuery = query(collection(db, "clients"));
+    const salesQuery = query(collection(db, "sales"), orderBy("date", "desc"));
+    const usersQuery = query(collection(db, "users"));
+
     const unsubClients = onSnapshot(
-      collection(db, "clients"),
+      clientsQuery,
       (snapshot) => {
         setClients(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Client)));
         setLoading(false);
@@ -74,7 +88,7 @@ export const useStore = (): UseStoreReturn => {
     );
 
     const unsubSales = onSnapshot(
-      collection(db, "sales"),
+      salesQuery,
       (snapshot) => {
         const loadedSales = snapshot.docs.map(doc => {
           const data = doc.data();
@@ -85,8 +99,6 @@ export const useStore = (): UseStoreReturn => {
           } as Sale;
         });
 
-        // Ordenar en memoria: más recientes primero
-        loadedSales.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setSales(loadedSales);
       },
       (error) => {
@@ -95,7 +107,7 @@ export const useStore = (): UseStoreReturn => {
     );
 
     const unsubUsers = onSnapshot(
-      collection(db, "users"),
+      usersQuery,
       (snapshot) => {
         setUsers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User)));
       },
@@ -141,8 +153,9 @@ export const useStore = (): UseStoreReturn => {
   const addSale = useCallback(async (sale: Omit<Sale, 'id' | 'saleNumber' | 'date'>) => {
     try {
       const year = new Date().getFullYear();
-      // Filtramos solo las ventas cargadas en el estado local que coincidan con el año
-      const yearSales = sales.filter(s => s.saleNumber?.startsWith(year.toString()));
+      
+      // Usar ventas memoizadas por año para mejor rendimiento
+      const yearSales = salesByYear;
 
       let nextNum = 1;
       if (yearSales.length > 0) {
@@ -151,7 +164,7 @@ export const useStore = (): UseStoreReturn => {
             const parts = s.saleNumber?.split('-');
             return parts && parts.length > 1 ? parseInt(parts[1], 10) : 0;
           })
-          .filter(n => !isNaN(n)); // Evitar NaN
+          .filter(n => !isNaN(n));
 
         if (nums.length > 0) {
           nextNum = Math.max(...nums) + 1;
@@ -169,7 +182,7 @@ export const useStore = (): UseStoreReturn => {
       console.error("Error agregando venta:", error);
       throw error;
     }
-  }, [sales]);
+  }, [salesByYear]);
 
   const updateSale = useCallback(async (id: string, sale: Partial<Sale>) => {
     try {
@@ -189,6 +202,13 @@ export const useStore = (): UseStoreReturn => {
     }
   }, []);
 
+  const getSalesByYear = useCallback((year: number) => {
+    return sales.filter(s => {
+      const saleYear = new Date(s.date).getFullYear();
+      return saleYear === year;
+    });
+  }, [sales]);
+
   return {
     clients,
     sales,
@@ -199,6 +219,7 @@ export const useStore = (): UseStoreReturn => {
     deleteClient,
     addSale,
     updateSale,
-    deleteSale
+    deleteSale,
+    getSalesByYear
   };
 };
