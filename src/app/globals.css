@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #F4A79D;
+  --color-primary-hover: #e89489;
+  --color-background: #FBF9F4;
+  --color-sidebar: #E3E3DB;
+  --color-main: #31332E;
+  --color-muted: #8c938f;
+  --color-accent: #E3E3DB;
+  --color-danger: #f2a6a6;
+  --color-terracota: #8B4E47;
+
+  --shadow-glass: 0 8px 20px 0 rgba(0, 0, 0, 0.05);
+
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+
+  --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair-display), ui-serif, Georgia, serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-main antialiased font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-serif {
+    @apply font-serif;
+  }
+}
+
+.glass-card {
+  @apply bg-white border border-[#e8eeee] rounded-[20px] shadow-glass;
+}
+
+.btn {
+  @apply px-5 py-2.5 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-primary-hover hover:-translate-y-0.5 hover:shadow-lg;
+}
+
+.btn-ghost {
+  @apply bg-transparent border border-[#e8eeee] text-muted hover:bg-white hover:text-main;
+}
+
+.btn-icon {
+  @apply w-8 h-8 flex items-center justify-center bg-white border border-[#e8eeee] rounded-lg transition-all hover:bg-primary hover:border-primary hover:text-white hover:scale-110;
+}
+
+.form-control {
+  @apply w-full px-4 py-3 bg-background border border-[#e8eeee] rounded-xl focus:outline-none focus:border-primary focus:bg-white transition-all;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-[#e8eeee] rounded-full hover:bg-muted;
+}
