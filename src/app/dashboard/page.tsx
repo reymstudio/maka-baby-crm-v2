@@ -157,11 +157,13 @@ export default function DashboardPage() {
         const allActivities: ActivityItem[] = [
         ...sales.map(s => {
             const dateObj = parseDate(s.date);
+            const client = clients.find(c => c.id === s.clientId);
+            const displayName = client?.commercialName || client?.name || s.clientName || 'Cliente';
             return {
                 id: s.id + '-sale',
                 type: 'sale' as const,
                 title: `Venta registrada: ${s.saleNumber}`.trim(),
-                desc: `Cliente: ${s.clientName || 'Cliente'} • ${formatDate(dateObj)}`,
+                desc: `Cliente: ${displayName} • ${formatDate(dateObj)}`,
                 amount: formatCurrency(s.grandTotal),
                 date: dateObj,
                 icon: Package,
@@ -170,11 +172,13 @@ export default function DashboardPage() {
         }),
         ...sales.filter(s => s.paid && s.paymentDate).map(s => {
             const dateObj = parsePaymentDate(s.paymentDate!);
+            const client = clients.find(c => c.id === s.clientId);
+            const displayName = client?.commercialName || client?.name || s.clientName || 'Cliente';
             return {
                 id: s.id + '-payment',
                 type: 'payment' as const,
                 title: `Pago recibido: ${s.saleNumber}`.trim(),
-                desc: `Cliente: ${s.clientName || 'Cliente'} • ${formatDate(dateObj)}`,
+                desc: `Cliente: ${displayName} • ${formatDate(dateObj)}`,
                 amount: formatCurrency(s.grandTotal),
                 date: dateObj,
                 icon: Banknote,
@@ -183,11 +187,12 @@ export default function DashboardPage() {
         }),
         ...clients.map((c) => {
             const dateObj = parseClientCreatedAt(c.createdAt);
+            const displayName = c.commercialName || c.name;
             return {
                 id: c.id,
                 type: 'client' as const,
                 title: `Nuevo Cliente Registrado`,
-                desc: `${c.name} • ${dateObj ? formatDate(dateObj) : 'Fecha no disponible'}`,
+                desc: `${displayName} • ${dateObj ? formatDate(dateObj) : 'Fecha no disponible'}`,
                 date: dateObj,
                 icon: UserPlus,
                 color: 'bg-[#e4eadf] text-[#31332E]'
