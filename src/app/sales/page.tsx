@@ -229,7 +229,7 @@ export default function SalesPage() {
                                                                     <button onClick={() => handlePrint(sale, 'label')} title="Etiqueta" className="btn-icon">
                                                                         <Tag className="w-4 h-4" />
                                                                     </button>
-                                                                    <button onClick={() => handleTogglePayment(sale)} title="Cambiar Estado" className="btn-icon">
+                                                                    <button onClick={() => handleTogglePayment(sale)} title="Cambiar Estado" className="btn-icon disabled:opacity-50 disabled:cursor-not-allowed" disabled={user?.role === 'Visita'}>
                                                                         <RefreshCcw className="w-4 h-4" />
                                                                     </button>
                                                                     <button onClick={() => handleOpenModal(sale)} title="Editar" className="btn-icon disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}>
@@ -316,7 +316,7 @@ export default function SalesPage() {
                                                     </div>
 
                                                     <div className="flex flex-wrap gap-2">
-                                                        <button onClick={() => handleTogglePayment(sale)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-[#e8eeee] rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-all">
+                                                        <button onClick={() => handleTogglePayment(sale)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-[#e8eeee] rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled={user?.role === 'Visita'}>
                                                             <RefreshCcw className="w-4 h-4" />
                                                             Estado
                                                         </button>

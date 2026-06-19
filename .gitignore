@@ -53,4 +53,4 @@ Thumbs.db
 .mypy_cache/
 # PyTest cache
 .pytest_cache/
-```
+```.next/
