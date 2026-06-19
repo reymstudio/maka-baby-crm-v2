@@ -296,6 +296,7 @@ export default function UsersPage() {
                                     <option value="Vendedor">Vendedor</option>
                                     <option value="Admin">Admin</option>
                                     <option value="Super Admin">Super Admin</option>
+                                    <option value="Visita">Visita</option>
                                 </select>
                             </div>
 

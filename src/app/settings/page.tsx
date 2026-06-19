@@ -31,6 +31,11 @@ export default function SettingsPage() {
 
         try {
             if (!auth.currentUser) return;
+            if (user?.role === 'Visita') {
+                setError('El rol Visita no puede modificar información.');
+                setLoading(false);
+                return;
+            }
 
             if (name !== user?.name) {
                 await updateProfile(auth.currentUser, { displayName: name });
@@ -137,7 +142,7 @@ export default function SettingsPage() {
                         </div>
 
                         <div className="pt-6">
-                            <button type="submit" className="btn btn-primary w-full justify-center h-12" disabled={loading}>
+                            <button type="submit" className="btn btn-primary w-full justify-center h-12" disabled={loading || user?.role === 'Visita'}>
                                 <Save className="w-5 h-5" />
                                 {loading ? 'Guardando...' : 'Guardar Cambios'}
                             </button>

@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { useStore } from '@/hooks/useStore';
+import { useAuth } from '@/context/AuthContext';
 import {
     Plus,
     Search,
@@ -29,6 +30,7 @@ const EMPTY_CLIENT_FORM = {
 
 export default function ClientsPage() {
     const { clients, addClient, updateClient, deleteClient } = useStore();
+    const { user } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingClient, setEditingClient] = useState<Client | null>(null);
@@ -54,6 +56,9 @@ export default function ClientsPage() {
         c.phone.includes(searchTerm) ||
         (c.nit && c.nit.includes(searchTerm))
     ), [clients, searchTerm]);
+
+    const canCreate = user?.role !== 'Visita';
+    const canEditOrDelete = user?.role !== 'Visita';
 
     const handleOpenModal = (client?: Client) => {
         if (client) {
@@ -107,7 +112,7 @@ export default function ClientsPage() {
                         <h1 className="text-3xl font-bold tracking-tight">Clientes</h1>
                         <p className="text-muted mt-1">Gestione su base de datos de clientes.</p>
                     </div>
-                    <button onClick={() => handleOpenModal()} className="btn btn-primary text-black">
+                    <button onClick={() => handleOpenModal()} className="btn btn-primary text-black disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canCreate}>
                         <Plus className="w-5 h-5" />
                         Nuevo Cliente
                     </button>
@@ -162,8 +167,8 @@ export default function ClientsPage() {
                                             </td>
                                             <td className="p-4 text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <button onClick={() => handleOpenModal(client)} className="btn-icon"><Edit2 className="w-4 h-4" /></button>
-                                                    <button onClick={() => handleDelete(client.id)} className="btn-icon hover:bg-danger hover:border-danger hover:text-white"><Trash2 className="w-4 h-4" /></button>
+                                                    <button onClick={() => handleOpenModal(client)} className="btn-icon disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}><Edit2 className="w-4 h-4" /></button>
+                                                    <button onClick={() => handleDelete(client.id)} className="btn-icon hover:bg-danger hover:border-danger hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-[#e8eeee] disabled:hover:text-main" disabled={!canEditOrDelete}><Trash2 className="w-4 h-4" /></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -190,8 +195,8 @@ export default function ClientsPage() {
                                         <div className="text-xs text-muted">NIT/CC: {client.nit || 'Sin definir'}</div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button onClick={() => handleOpenModal(client)} className="btn-icon w-10 h-10"><Edit2 className="w-5 h-5" /></button>
-                                        <button onClick={() => handleDelete(client.id)} className="btn-icon w-10 h-10 text-danger border-none hover:bg-red-50"><Trash2 className="w-5 h-5" /></button>
+                                        <button onClick={() => handleOpenModal(client)} className="btn-icon w-10 h-10 disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}><Edit2 className="w-5 h-5" /></button>
+                                        <button onClick={() => handleDelete(client.id)} className="btn-icon w-10 h-10 text-danger border-none hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent" disabled={!canEditOrDelete}><Trash2 className="w-5 h-5" /></button>
                                     </div>
                                 </div>
                             </div>

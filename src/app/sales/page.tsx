@@ -42,7 +42,8 @@ export default function SalesPage() {
 
     const [printData, setPrintData] = useState<{ sale: Sale; type: 'invoice' | 'label' } | null>(null);
 
-    const canEditOrDelete = user?.role !== 'Vendedor';
+    const canCreate = user?.role !== 'Visita';
+    const canEditOrDelete = user?.role !== 'Vendedor' && user?.role !== 'Visita';
 
     const normalizedSales = useMemo(() => sales.map(sale => {
         if (!sale.clientName) {
@@ -127,7 +128,7 @@ export default function SalesPage() {
                         <h1 className="text-3xl font-bold tracking-tight">Ventas</h1>
                         <p className="text-muted mt-1">Gestión de transacciones y facturación.</p>
                     </div>
-                    <button onClick={() => handleOpenModal()} className="btn btn-primary">
+                    <button onClick={() => handleOpenModal()} className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canCreate}>
                         <Plus className="w-5 h-5" />
                         Nueva Venta
                     </button>
@@ -231,16 +232,12 @@ export default function SalesPage() {
                                                                     <button onClick={() => handleTogglePayment(sale)} title="Cambiar Estado" className="btn-icon">
                                                                         <RefreshCcw className="w-4 h-4" />
                                                                     </button>
-                                                                    {canEditOrDelete && (
-                                                                        <>
-                                                                            <button onClick={() => handleOpenModal(sale)} title="Editar" className="btn-icon">
-                                                                                <Edit2 className="w-4 h-4" />
-                                                                            </button>
-                                                                            <button onClick={() => handleDeleteSale(sale.id)} title="Borrar" className="btn-icon text-danger border-danger/20">
-                                                                                <Trash2 className="w-4 h-4" />
-                                                                            </button>
-                                                                        </>
-                                                                    )}
+                                                                    <button onClick={() => handleOpenModal(sale)} title="Editar" className="btn-icon disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}>
+                                                                        <Edit2 className="w-4 h-4" />
+                                                                    </button>
+                                                                    <button onClick={() => handleDeleteSale(sale.id)} title="Borrar" className="btn-icon text-danger border-danger/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent" disabled={!canEditOrDelete}>
+                                                                        <Trash2 className="w-4 h-4" />
+                                                                    </button>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -333,18 +330,16 @@ export default function SalesPage() {
                                                                 Etiqueta
                                                             </button>
                                                         </div>
-                                                        {canEditOrDelete && (
                                                             <div className="flex gap-2 w-full">
-                                                                <button onClick={() => handleOpenModal(sale)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-[#e8eeee] rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-all">
+                                                                <button onClick={() => handleOpenModal(sale)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-[#e8eeee] rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}>
                                                                     <Edit2 className="w-4 h-4" />
                                                                     Editar
                                                                 </button>
-                                                                <button onClick={() => handleDeleteSale(sale.id)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-danger rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-all">
+                                                                <button onClick={() => handleDeleteSale(sale.id)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-danger rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-50" disabled={!canEditOrDelete}>
                                                                     <Trash2 className="w-4 h-4" />
                                                                     Borrar
                                                                 </button>
                                                             </div>
-                                                        )}
                                                     </div>
                                                 </div>
                                             ))}
