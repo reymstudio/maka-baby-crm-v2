@@ -185,32 +185,32 @@ export default function SalesPage() {
 
                                     {isExpanded && (
                                         <div className="overflow-x-auto animate-in slide-in-from-top-2 duration-300">
-                                            <table className="w-full text-left border-collapse">
+                                            <table className="w-full text-left border-collapse min-w-[650px]">
                                                 <thead className="bg-sidebar">
                                                     <tr>
-                                                        <th className="p-4 text-sm font-semibold text-muted">No. Venta</th>
-                                                        <th className="p-4 text-sm font-semibold text-muted">Fecha</th>
-                                                        <th className="p-4 text-sm font-semibold text-muted">Cliente</th>
-                                                        <th className="p-4 text-sm font-semibold text-muted text-center">Estado</th>
-                                                        <th className="p-4 text-sm font-semibold text-muted">Total</th>
-                                                        <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
+                                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted whitespace-nowrap">No. Venta</th>
+                                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted whitespace-nowrap">Fecha</th>
+                                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted">Cliente</th>
+                                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted text-center whitespace-nowrap">Estado</th>
+                                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted whitespace-nowrap">Total</th>
+                                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted text-right whitespace-nowrap">Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-[#e8eeee]">
                                                     {monthSales.map((sale) => (
                                                         <tr key={sale.id} className="hover:bg-sidebar/30 transition-colors">
-                                                            <td className="p-4 uppercase font-bold text-xs text-primary">
+                                                            <td className="p-3.5 lg:p-4 uppercase font-bold text-xs text-primary whitespace-nowrap">
                                                                 #{sale.saleNumber}
                                                             </td>
-                                                            <td className="p-4 text-sm text-muted">
+                                                            <td className="p-3.5 lg:p-4 text-xs lg:text-sm text-muted whitespace-nowrap">
                                                                 {formatDate(sale.date)}
                                                             </td>
-                                                            <td className="p-4">
-                                                                <div className="font-semibold text-main">{sale.clientName}</div>
+                                                            <td className="p-3.5 lg:p-4">
+                                                                <div className="font-semibold text-main text-sm max-w-[170px] lg:max-w-[210px] xl:max-w-xs truncate" title={sale.clientName}>{sale.clientName}</div>
                                                             </td>
-                                                            <td className="p-4 text-center">
+                                                            <td className="p-3.5 lg:p-4 text-center whitespace-nowrap">
                                                                 <span className={cn(
-                                                                    "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                                                                    "px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider",
                                                                     sale.paid
                                                                         ? "bg-green-50 text-green-600 border border-green-100"
                                                                         : "bg-red-50 text-red-600 border border-red-100"
@@ -218,25 +218,25 @@ export default function SalesPage() {
                                                                     {sale.paid ? 'Pagado' : 'Pendiente'}
                                                                 </span>
                                                             </td>
-                                                            <td className="p-4 font-bold text-primary">
+                                                            <td className="p-3.5 lg:p-4 font-bold text-primary whitespace-nowrap text-sm lg:text-base">
                                                                 {formatCurrency(sale.grandTotal)}
                                                             </td>
-                                                            <td className="p-4 text-right">
-                                                                <div className="flex justify-end gap-2">
-                                                                    <button onClick={() => handlePrint(sale, 'invoice')} title="Imprimir" className="btn-icon">
-                                                                        <Printer className="w-4 h-4" />
+                                                            <td className="p-3.5 lg:p-4 text-right whitespace-nowrap">
+                                                                <div className="flex justify-end gap-1.5">
+                                                                    <button onClick={() => handlePrint(sale, 'invoice')} title="Imprimir" className="btn-icon w-7 h-7 sm:w-8 sm:h-8">
+                                                                        <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                     </button>
-                                                                    <button onClick={() => handlePrint(sale, 'label')} title="Etiqueta" className="btn-icon">
-                                                                        <Tag className="w-4 h-4" />
+                                                                    <button onClick={() => handlePrint(sale, 'label')} title="Etiqueta" className="btn-icon w-7 h-7 sm:w-8 sm:h-8">
+                                                                        <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                     </button>
-                                                                    <button onClick={() => handleTogglePayment(sale)} title="Cambiar Estado" className="btn-icon disabled:opacity-50 disabled:cursor-not-allowed" disabled={user?.role === 'Visita'}>
-                                                                        <RefreshCcw className="w-4 h-4" />
+                                                                    <button onClick={() => handleTogglePayment(sale)} title="Cambiar Estado" className="btn-icon w-7 h-7 sm:w-8 sm:h-8 disabled:opacity-50 disabled:cursor-not-allowed" disabled={user?.role === 'Visita'}>
+                                                                        <RefreshCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                     </button>
-                                                                    <button onClick={() => handleOpenModal(sale)} title="Editar" className="btn-icon disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}>
-                                                                        <Edit2 className="w-4 h-4" />
+                                                                    <button onClick={() => handleOpenModal(sale)} title="Editar" className="btn-icon w-7 h-7 sm:w-8 sm:h-8 disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}>
+                                                                        <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                     </button>
-                                                                    <button onClick={() => handleDeleteSale(sale.id)} title="Borrar" className="btn-icon text-danger border-danger/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent" disabled={!canEditOrDelete}>
-                                                                        <Trash2 className="w-4 h-4" />
+                                                                    <button onClick={() => handleDeleteSale(sale.id)} title="Borrar" className="btn-icon w-7 h-7 sm:w-8 sm:h-8 text-danger border-danger/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent" disabled={!canEditOrDelete}>
+                                                                        <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                     </button>
                                                                 </div>
                                                             </td>

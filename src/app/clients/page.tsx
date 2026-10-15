@@ -133,42 +133,44 @@ export default function ClientsPage() {
                     {/* Desktop Table */}
                     <div className="hidden md:block glass-card overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
+                            <table className="w-full text-left border-collapse min-w-[650px]">
                                 <thead className="bg-sidebar">
                                     <tr>
-                                        <th className="p-4 text-sm font-semibold text-muted">Nombre Comercial / NIT</th>
-                                        <th className="p-4 text-sm font-semibold text-muted">Nombre de Contacto</th>
-                                        <th className="p-4 text-sm font-semibold text-muted">Teléfono / Correo Electrónico</th>
-                                        <th className="p-4 text-sm font-semibold text-muted hidden lg:table-cell">Ubicación</th>
-                                        <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
+                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted whitespace-nowrap">Nombre Comercial / NIT</th>
+                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted">Nombre de Contacto</th>
+                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted whitespace-nowrap">Teléfono / Correo</th>
+                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted hidden lg:table-cell">Ubicación</th>
+                                        <th className="p-3.5 lg:p-4 text-xs lg:text-sm font-semibold text-muted text-right whitespace-nowrap">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[#e8eeee]">
                                     {filteredClients.map((client) => (
                                         <tr key={client.id} className="hover:bg-sidebar/30 transition-colors">
-                                            <td className="p-4">
-                                                <div className="font-semibold text-main">{client.commercialName || '-'}</div>
-                                                <div className="text-xs text-muted">NIT/CC: {client.nit || 'Sin definir'}</div>
+                                            <td className="p-3.5 lg:p-4">
+                                                <div className="font-semibold text-main text-sm max-w-[180px] truncate" title={client.commercialName || '-'}>{client.commercialName || '-'}</div>
+                                                <div className="text-xs text-muted whitespace-nowrap">NIT/CC: {client.nit || 'Sin definir'}</div>
                                             </td>
-                                            <td className="p-4">
-                                                <div className="text-sm text-main">{client.name}</div>
+                                            <td className="p-3.5 lg:p-4">
+                                                <div className="text-sm text-main font-medium max-w-[160px] truncate" title={client.name}>{client.name}</div>
                                             </td>
-                                            <td className="p-4">
+                                            <td className="p-3.5 lg:p-4 whitespace-nowrap">
                                                 <div className="text-sm text-main">{client.phone}</div>
                                                 {client.email && (
-                                                    <div className="text-xs text-muted mt-1">{client.email}</div>
+                                                    <div className="text-xs text-muted mt-0.5 max-w-[160px] truncate" title={client.email}>{client.email}</div>
                                                 )}
                                             </td>
-                                            <td className="p-4 hidden lg:table-cell">
-                                                <div className="text-sm text-main">{client.address || 'Sin dirección'}</div>
-                                                <div className="text-xs text-muted">
-                                                    {[client.barrio, client.ciudad, client.departamento].filter(Boolean).join(', ') || '-'}
+                                            <td className="p-3.5 lg:p-4 hidden lg:table-cell">
+                                                <div className="text-sm text-main max-w-[180px] truncate" title={[client.ciudad, client.departamento].filter(Boolean).join(', ') || client.address || '-'}>
+                                                    {[client.ciudad, client.departamento].filter(Boolean).join(', ') || client.address || '-'}
+                                                </div>
+                                                <div className="text-xs text-muted max-w-[180px] truncate" title={client.address || '-'}>
+                                                    {client.address || '-'}
                                                 </div>
                                             </td>
-                                            <td className="p-4 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <button onClick={() => handleOpenModal(client)} className="btn-icon disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}><Edit2 className="w-4 h-4" /></button>
-                                                    <button onClick={() => handleDelete(client.id)} className="btn-icon hover:bg-danger hover:border-danger hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-[#e8eeee] disabled:hover:text-main" disabled={!canEditOrDelete}><Trash2 className="w-4 h-4" /></button>
+                                            <td className="p-3.5 lg:p-4 text-right whitespace-nowrap">
+                                                <div className="flex justify-end gap-1.5">
+                                                    <button onClick={() => handleOpenModal(client)} className="btn-icon w-7 h-7 sm:w-8 sm:h-8 disabled:opacity-50 disabled:cursor-not-allowed" disabled={!canEditOrDelete}><Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></button>
+                                                    <button onClick={() => handleDelete(client.id)} className="btn-icon w-7 h-7 sm:w-8 sm:h-8 hover:bg-danger hover:border-danger hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-[#e8eeee] disabled:hover:text-main" disabled={!canEditOrDelete}><Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -212,12 +214,12 @@ export default function ClientsPage() {
 
             {/* Modal Cliente */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}>
-                    <div className="bg-white rounded-[28px] w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/30 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}>
+                    <div className="bg-white rounded-2xl lg:rounded-[28px] w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-300 max-h-[88vh] flex flex-col" onClick={e => e.stopPropagation()}>
 
                         {/* Header */}
-                        <div className="flex justify-between items-center px-8 pt-8 pb-6">
-                            <h2 className="text-[26px] font-serif text-main">
+                        <div className="flex justify-between items-center px-6 sm:px-8 pt-5 sm:pt-6 pb-3 sm:pb-4 shrink-0 border-b border-[#f0eeeb]">
+                            <h2 className="text-xl sm:text-[24px] font-serif text-main">
                                 {editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}
                             </h2>
                             <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 flex items-center justify-center text-[#8c938f] hover:text-main transition-colors text-xl">
@@ -225,96 +227,97 @@ export default function ClientsPage() {
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="px-8 pb-8 space-y-6">
-
-                            {/* Información Personal */}
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-2">
-                                    <User className="w-4 h-4 text-terracota" />
-                                    <span className="text-[10px] font-bold text-[#8c938f] uppercase tracking-widest">Información Personal</span>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-[12px] font-medium text-[#6b7280]">Nombre Comercial</label>
-                                        <input type="text" className={inputClass} placeholder="Ej: Mäka Baby" required
-                                            value={formData.commercialName} onChange={e => setFormData({ ...formData, commercialName: e.target.value })} />
+                        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                            <div className="px-6 sm:px-8 py-4 space-y-5 overflow-y-auto flex-1">
+                                {/* Información Personal */}
+                                <div className="space-y-3 sm:space-y-4">
+                                    <div className="flex items-center gap-2">
+                                        <User className="w-4 h-4 text-terracota" />
+                                        <span className="text-[10px] font-bold text-[#8c938f] uppercase tracking-widest">Información Personal</span>
                                     </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-[12px] font-medium text-[#6b7280]">Nombre de Contacto</label>
-                                        <input type="text" className={inputClass} placeholder="Ej: María Restrepo" required
-                                            value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+
+                                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Nombre Comercial</label>
+                                            <input type="text" className={inputClass} placeholder="Ej: Mäka Baby" required
+                                                value={formData.commercialName} onChange={e => setFormData({ ...formData, commercialName: e.target.value })} />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Nombre de Contacto</label>
+                                            <input type="text" className={inputClass} placeholder="Ej: María Restrepo" required
+                                                value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-[12px] font-medium text-[#6b7280]">Cédula / NIT</label>
-                                        <input type="text" className={inputClass} placeholder="1.234.567.890" required
-                                            value={formData.nit}
-                                            onChange={e => setFormData({ ...formData, nit: formatNit(e.target.value) })} />
+                                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Cédula / NIT</label>
+                                            <input type="text" className={inputClass} placeholder="1.234.567.890" required
+                                                value={formData.nit}
+                                                onChange={e => setFormData({ ...formData, nit: formatNit(e.target.value) })} />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Teléfono</label>
+                                            <input type="tel" className={inputClass} placeholder="(300) 0000000" required
+                                                value={formData.phone}
+                                                onChange={e => setFormData({ ...formData, phone: formatPhone(e.target.value) })} />
+                                        </div>
                                     </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-[12px] font-medium text-[#6b7280]">Teléfono</label>
-                                        <input type="tel" className={inputClass} placeholder="(300) 0000000" required
-                                            value={formData.phone}
-                                            onChange={e => setFormData({ ...formData, phone: formatPhone(e.target.value) })} />
-                                    </div>
-                                </div>
 
-                                <div className="space-y-1.5">
-                                    <label className="text-[12px] font-medium text-[#6b7280]">Correo Electrónico (opcional)</label>
-                                    <input type="email" className={inputClass} placeholder="nombre@correo.com"
-                                        value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
-                                </div>
-                            </div>
-
-                            {/* Ubicación */}
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-2">
-                                    <MapPin className="w-4 h-4 text-terracota" />
-                                    <span className="text-[10px] font-bold text-[#8c938f] uppercase tracking-widest">Ubicación</span>
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <label className="text-[12px] font-medium text-[#6b7280]">Dirección</label>
-                                    <input type="text" className={inputClass} placeholder="Calle 123 #45-67" required
-                                        value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-[12px] font-medium text-[#6b7280]">Dirección (Complemento)</label>
-                                        <input type="text" className={inputClass} placeholder="Ej: Apto 101, Torre 2"
-                                            value={formData.complemento} onChange={e => setFormData({ ...formData, complemento: e.target.value })} />
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-[12px] font-medium text-[#6b7280]">Barrio</label>
-                                        <input type="text" className={inputClass} placeholder="Ej: El Poblado" required
-                                            value={formData.barrio} onChange={e => setFormData({ ...formData, barrio: e.target.value })} />
+                                    <div className="space-y-1">
+                                        <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Correo Electrónico (opcional)</label>
+                                        <input type="email" className={inputClass} placeholder="nombre@correo.com"
+                                            value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-[12px] font-medium text-[#6b7280]">Ciudad</label>
-                                        <input type="text" className={inputClass} placeholder="Ej: Bogotá" required
-                                            value={formData.ciudad} onChange={e => setFormData({ ...formData, ciudad: e.target.value })} />
+                                {/* Ubicación */}
+                                <div className="space-y-3 sm:space-y-4 pt-1">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="w-4 h-4 text-terracota" />
+                                        <span className="text-[10px] font-bold text-[#8c938f] uppercase tracking-widest">Ubicación</span>
                                     </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-[12px] font-medium text-[#6b7280]">Departamento</label>
-                                        <input type="text" className={inputClass} placeholder="Ej: Antioquia" required
-                                            value={formData.departamento} onChange={e => setFormData({ ...formData, departamento: e.target.value })} />
+
+                                    <div className="space-y-1">
+                                        <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Dirección</label>
+                                        <input type="text" className={inputClass} placeholder="Calle 123 #45-67" required
+                                            value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Dirección (Complemento)</label>
+                                            <input type="text" className={inputClass} placeholder="Ej: Apto 101, Torre 2"
+                                                value={formData.complemento} onChange={e => setFormData({ ...formData, complemento: e.target.value })} />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Barrio</label>
+                                            <input type="text" className={inputClass} placeholder="Ej: El Poblado" required
+                                                value={formData.barrio} onChange={e => setFormData({ ...formData, barrio: e.target.value })} />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Ciudad</label>
+                                            <input type="text" className={inputClass} placeholder="Ej: Bogotá" required
+                                                value={formData.ciudad} onChange={e => setFormData({ ...formData, ciudad: e.target.value })} />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[11px] sm:text-[12px] font-medium text-[#6b7280]">Departamento</label>
+                                            <input type="text" className={inputClass} placeholder="Ej: Antioquia" required
+                                                value={formData.departamento} onChange={e => setFormData({ ...formData, departamento: e.target.value })} />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Footer */}
-                            <div className="flex justify-between items-center pt-4 border-t border-[#f0eeeb]">
+                            <div className="flex justify-between items-center px-6 sm:px-8 py-3.5 sm:py-4 border-t border-[#f0eeeb] shrink-0 bg-white rounded-b-2xl lg:rounded-b-[28px]">
                                 <button type="button" onClick={() => setIsModalOpen(false)} className="text-[13px] text-[#8c938f] hover:text-main transition-colors font-medium">
                                     Descartar cambios
                                 </button>
-                                <button type="submit" className="bg-terracota text-white font-bold px-8 py-3 rounded-full hover:opacity-90 transition-all hover:-translate-y-0.5 active:scale-95 shadow-sm">
+                                <button type="submit" className="bg-terracota text-white font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full hover:opacity-90 transition-all hover:-translate-y-0.5 active:scale-95 shadow-sm text-sm">
                                     {editingClient ? 'Guardar Cambios' : 'Guardar Cliente'}
                                 </button>
                             </div>

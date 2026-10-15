@@ -86,10 +86,10 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl w-full max-w-4xl p-6 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-primary">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/20 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-4xl p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[88vh] flex flex-col">
+        <div className="flex justify-between items-center mb-3 sm:mb-4 shrink-0">
+          <h2 className="text-lg sm:text-xl font-bold text-primary">
             {sale ? `Editar Venta ${sale.saleNumber}` : 'Nueva Venta'}
           </h2>
           <button onClick={onClose} className="btn-icon">
@@ -97,11 +97,11 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 space-y-3 sm:space-y-4">
+          <div className="space-y-1 shrink-0">
             <label className="text-xs font-semibold text-muted ml-1">Seleccionar Cliente</label>
             <select
-              className="form-control py-2.5"
+              className="form-control py-2 sm:py-2.5 text-sm"
               required
               value={clientId}
               onChange={e => setClientId(e.target.value)}
@@ -113,27 +113,27 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
             </select>
           </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
+          <div className="space-y-2.5 flex-1 min-h-0 flex flex-col">
+            <div className="flex items-center justify-between shrink-0">
               <h3 className="text-sm font-bold text-main">Detalle de Productos</h3>
               <button
                 type="button"
                 onClick={handleAddItem}
-                className="btn btn-ghost text-primary border-primary/20 py-1.5 h-9 text-xs"
+                className="btn btn-ghost text-primary border-primary/20 py-1.5 h-8 sm:h-9 text-xs"
               >
                 <Plus className="w-3 h-3" />
                 Añadir Producto
               </button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 overflow-y-auto flex-1 pr-1">
               {items.map((item, index) => (
-                <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_80px_150px_130px_40px] gap-3 items-end p-3 bg-background rounded-2xl border border-[#e8eeee]">
+                <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_75px_130px_120px_36px] gap-2.5 items-end p-2.5 sm:p-3 bg-background rounded-2xl border border-[#e8eeee]">
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-muted uppercase ml-1">Descripción</label>
                     <input
                       type="text"
-                      className="form-control py-2 h-10 text-sm"
+                      className="form-control py-2 h-9 sm:h-10 text-sm"
                       placeholder="Nombre del producto"
                       value={item.description}
                       onChange={e => updateItem(index, 'description', e.target.value)}
@@ -144,7 +144,7 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                     <label className="text-[10px] font-bold text-muted uppercase ml-1">Cant.</label>
                     <input
                       type="number"
-                      className="form-control py-2 h-10 text-sm text-center"
+                      className="form-control py-2 h-9 sm:h-10 text-sm text-center"
                       min="0"
                       value={item.quantity}
                       onChange={e => updateItem(index, 'quantity', parseInt(e.target.value) || 0)}
@@ -155,7 +155,7 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                     <label className="text-[10px] font-bold text-muted uppercase ml-1">Precio Unit.</label>
                     <input
                       type="text"
-                      className="form-control py-2 h-10 text-sm"
+                      className="form-control py-2 h-9 sm:h-10 text-sm"
                       value={(item.price ?? 0).toLocaleString()}
                       onChange={e => updateItem(index, 'price', e.target.value)}
                       required
@@ -164,7 +164,7 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
 
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-muted uppercase ml-1">Total</label>
-                    <div className="bg-white border border-[#e8eeee] rounded-xl px-3 py-2 text-sm font-bold text-primary flex items-center h-10">
+                    <div className="bg-white border border-[#e8eeee] rounded-xl px-3 py-2 text-sm font-bold text-primary flex items-center h-9 sm:h-10">
                       {formatCurrency(item.quantity * item.price)}
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                   <button
                     type="button"
                     onClick={() => handleRemoveItem(index)}
-                    className="p-2 text-danger hover:bg-red-50 rounded-xl transition-colors h-10 flex items-center justify-center"
+                    className="p-2 text-danger hover:bg-red-50 rounded-xl transition-colors h-9 sm:h-10 flex items-center justify-center shrink-0"
                     disabled={items.length === 1}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -182,18 +182,18 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#e8eeee] flex justify-between items-end">
+          <div className="pt-3 sm:pt-4 border-t border-[#e8eeee] flex justify-between items-center shrink-0 bg-white">
             <div className="flex gap-2">
-              <button type="button" onClick={onClose} className="btn btn-ghost px-6 h-11 text-sm">
+              <button type="button" onClick={onClose} className="btn btn-ghost px-4 sm:px-6 h-10 sm:h-11 text-sm">
                 Cancelar
               </button>
-              <button type="submit" className="btn btn-primary px-6 h-11 text-sm" disabled={loading}>
+              <button type="submit" className="btn btn-primary px-4 sm:px-6 h-10 sm:h-11 text-sm" disabled={loading}>
                 {loading ? 'Guardando...' : sale ? 'Actualizar Venta' : 'Registrar Venta'}
               </button>
             </div>
             <div className="text-right">
-              <span className="text-xs text-muted uppercase font-bold tracking-wider">Total</span>
-              <div className="text-2xl font-bold text-primary leading-none mt-1">{formatCurrency(grandTotal)}</div>
+              <span className="text-[10px] sm:text-xs text-muted uppercase font-bold tracking-wider">Total</span>
+              <div className="text-xl sm:text-2xl font-bold text-primary leading-none mt-0.5">{formatCurrency(grandTotal)}</div>
             </div>
           </div>
         </form>

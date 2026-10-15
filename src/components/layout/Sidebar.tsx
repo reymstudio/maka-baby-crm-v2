@@ -55,17 +55,17 @@ export const Sidebar = () => {
 
             {/* Sidebar */}
             <aside className={cn(
-                "fixed inset-y-0 left-0 z-40 w-72 bg-sidebar border-r border-[#e8eeee] flex flex-col transition-transform duration-300 transform lg:translate-x-0 print:hidden",
+                "fixed inset-y-0 left-0 z-40 w-64 xl:w-72 bg-sidebar border-r border-[#e8eeee] flex flex-col transition-transform duration-300 transform lg:translate-x-0 print:hidden",
                 isOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="p-6 flex items-center gap-4">
-                    <div className="w-16 h-16 flex items-center justify-center bg-transparent shrink-0">
-                        <Image src="/logo.png" alt="MÄKA Baby" className="w-full h-full object-contain" width={64} height={64} />
+                <div className="p-5 xl:p-6 flex items-center gap-3 xl:gap-4">
+                    <div className="w-12 h-12 xl:w-14 xl:h-14 flex items-center justify-center bg-transparent shrink-0">
+                        <Image src="/logo.png" alt="MÄKA Baby" className="w-full h-full object-contain" width={56} height={56} />
                     </div>
-                    <span className="font-bold font-serif text-2xl tracking-tight text-main">MÄKA Baby</span>
+                    <span className="font-bold font-serif text-xl xl:text-2xl tracking-tight text-main">MÄKA Baby</span>
                 </div>
 
-                <nav className="flex-1 px-4 space-y-1">
+                <nav className="flex-1 px-3 xl:px-4 space-y-1">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href;
@@ -74,37 +74,37 @@ export const Sidebar = () => {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300",
+                                    "flex items-center gap-3 px-3.5 py-2.5 xl:px-4 xl:py-3 rounded-xl transition-all duration-300 text-sm xl:text-base",
                                     isActive
-                                        ? "bg-white text-terracota border border-[#e8eeee] shadow-glass"
-                                        : "text-muted hover:bg-white hover:text-terracota"
+                                        ? "bg-white text-terracota border border-[#e8eeee] shadow-glass font-semibold"
+                                        : "text-muted hover:bg-white hover:text-terracota font-medium"
                                 )}
                                 onClick={() => setIsOpen(false)}
                             >
-                                <Icon className="w-5 h-5" />
-                                <span className="font-medium">{item.label}</span>
+                                <Icon className="w-5 h-5 shrink-0" />
+                                <span>{item.label}</span>
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-[#e8eeee]">
+                <div className="p-3.5 xl:p-4 border-t border-[#e8eeee]">
                     {user && (
-                        <div className="flex items-center gap-3 mb-4 px-2">
-                            <div className="w-10 h-10 rounded-full bg-white border border-[#e8eeee] flex items-center justify-center font-bold text-terracota shadow-sm">
+                        <div className="flex items-center gap-3 mb-3 px-1 xl:px-2">
+                            <div className="w-9 h-9 xl:w-10 xl:h-10 rounded-full bg-white border border-[#e8eeee] flex items-center justify-center font-bold text-terracota shadow-sm shrink-0">
                                 {user.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-sm font-semibold truncate">{user.name}</span>
-                                <span className="text-xs text-muted">{user.role}</span>
+                                <span className="text-xs text-muted truncate">{user.role}</span>
                             </div>
                         </div>
                     )}
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-terracota hover:bg-white hover:text-terracota transition-all duration-300"
+                        className="w-full flex items-center gap-3 px-3.5 py-2.5 xl:px-4 xl:py-3 rounded-xl text-terracota hover:bg-white hover:text-terracota transition-all duration-300 text-sm xl:text-base"
                     >
-                        <LogOut className="w-5 h-5" />
+                        <LogOut className="w-5 h-5 shrink-0" />
                         <span className="font-medium">Cerrar Sesión</span>
                     </button>
                 </div>
