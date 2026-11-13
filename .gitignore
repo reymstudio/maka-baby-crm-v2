@@ -54,3 +54,10 @@ Thumbs.db
 # PyTest cache
 .pytest_cache/
 ```.next/
+
+/.next/
+/out/
+/node_modules
+.env*.local
+build_log.txt
+tsconfig.tsbuildinfo

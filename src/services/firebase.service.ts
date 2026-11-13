@@ -1,11 +1,8 @@
-/**
- * Servicios de Firebase - Operaciones CRUD centralizadas
- */
-
 import {
   collection,
   doc,
   addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
   getDoc,
@@ -13,8 +10,7 @@ import {
   query,
   orderBy,
   where,
-  Timestamp,
-  QueryConstraint,
+  limit,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Client, Sale, User } from '@/types';
@@ -22,14 +18,15 @@ import { Client, Sale, User } from '@/types';
 // ==================== CLIENTS ====================
 
 export const clientService = {
-  getAll: async () => {
-    const snapshot = await getDocs(collection(db, 'clients'));
+  getAll: async (maxResults = 250) => {
+    const q = query(collection(db, 'clients'), orderBy('name', 'asc'), limit(maxResults));
+    const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Client));
   },
 
   getById: async (id: string) => {
     const snap = await getDoc(doc(db, 'clients', id));
-    return snap.exists() ? { id: snap.id, ...snap.data() } as Client : null;
+    return snap.exists() ? ({ id: snap.id, ...snap.data() } as Client) : null;
   },
 
   create: async (data: Omit<Client, 'id'>) => {
@@ -52,8 +49,8 @@ export const clientService = {
 // ==================== SALES ====================
 
 export const saleService = {
-  getAll: async () => {
-    const q = query(collection(db, 'sales'), orderBy('date', 'desc'));
+  getAll: async (maxResults = 250) => {
+    const q = query(collection(db, 'sales'), orderBy('date', 'desc'), limit(maxResults));
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => {
       const data = doc.data();
@@ -71,7 +68,8 @@ export const saleService = {
     const q = query(
       collection(db, 'sales'),
       where('date', '>=', startDate),
-      where('date', '<', endDate)
+      where('date', '<', endDate),
+      orderBy('date', 'desc')
     );
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => ({
@@ -93,11 +91,12 @@ export const saleService = {
   },
 
   create: async (data: Omit<Sale, 'id' | 'saleNumber' | 'date'>, saleNumber: string) => {
-    await addDoc(collection(db, 'sales'), {
+    const docRef = await addDoc(collection(db, 'sales'), {
       ...data,
       saleNumber,
       date: new Date().toISOString(),
     });
+    return docRef.id;
   },
 
   update: async (id: string, data: Partial<Sale>) => {
@@ -119,44 +118,49 @@ export const userService = {
 
   getById: async (uid: string) => {
     const snap = await getDoc(doc(db, 'users', uid));
-    return snap.exists() ? { id: snap.id, ...snap.data() } as User : null;
+    return snap.exists() ? ({ id: snap.id, ...snap.data() } as User) : null;
   },
 
-  create: async (data: Omit<User, 'id'>) => {
-    await addDoc(collection(db, 'users'), {
+  create: async (uid: string, data: Omit<User, 'id' | 'uid'>) => {
+    await setDoc(doc(db, 'users', uid), {
       ...data,
+      uid,
       createdAt: data.createdAt || new Date().toISOString(),
     });
   },
 
-  update: async (id: string, data: Partial<User>) => {
-    await updateDoc(doc(db, 'users', id), data);
+  update: async (uid: string, data: Partial<User>) => {
+    await updateDoc(doc(db, 'users', uid), data);
   },
 
-  delete: async (id: string) => {
-    await deleteDoc(doc(db, 'users', id));
+  delete: async (uid: string) => {
+    await deleteDoc(doc(db, 'users', uid));
   },
 };
 
 // ==================== HELPERS ====================
 
-function parseFirestoreDate(dateVal: any): string {
+function parseFirestoreDate(dateVal: unknown): string {
   if (!dateVal) return new Date().toISOString();
-  
+
   try {
     if (typeof dateVal === 'string') return dateVal;
-    
+
     if (typeof dateVal === 'object' && dateVal !== null) {
-      if ('toDate' in dateVal && typeof dateVal.toDate === 'function') {
-        return dateVal.toDate().toISOString();
+      if ('toDate' in dateVal && typeof (dateVal as { toDate: () => Date }).toDate === 'function') {
+        return (dateVal as { toDate: () => Date }).toDate().toISOString();
       }
-      if ('seconds' in dateVal) {
-        return new Date((dateVal as any).seconds * 1000).toISOString();
+      if ('seconds' in dateVal && typeof (dateVal as { seconds: number }).seconds === 'number') {
+        return new Date((dateVal as { seconds: number }).seconds * 1000).toISOString();
       }
     }
-    
-    const fallback = new Date(dateVal);
-    return !isNaN(fallback.getTime()) ? fallback.toISOString() : new Date().toISOString();
+
+    if (typeof dateVal === 'number' || dateVal instanceof Date) {
+      const fallback = new Date(dateVal);
+      return !isNaN(fallback.getTime()) ? fallback.toISOString() : new Date().toISOString();
+    }
+
+    return new Date().toISOString();
   } catch {
     return new Date().toISOString();
   }
